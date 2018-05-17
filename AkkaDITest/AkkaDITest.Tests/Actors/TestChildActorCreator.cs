@@ -9,17 +9,17 @@ namespace AkkaDITest.Tests.Actors
 {
     public class TestChildActorCreator : IChildActorCreator
     {
-        private Dictionary<Type, Func<IUntypedActorContext, IActorRef>> _propLookup =
-            new Dictionary<Type, Func<IUntypedActorContext, IActorRef>>();
+        private Dictionary<string, Func<IUntypedActorContext, Props>> _propLookup =
+            new Dictionary<string, Func<IUntypedActorContext, Props>>();
 
         public TestChildActorCreator()
         {
-            _propLookup.Add(typeof(BeginChildMessage), (context) => context.ActorOf(context.DI().Props<TestChildActor>(), ActorNames.MyChildActorName));
+            _propLookup.Add(ActorNames.MyChildActorName, (context) => context.DI().Props<TestChildActor>());
         }
 
-        public IActorRef GetChild<T>(IUntypedActorContext context)
+        public Props GetChild(string actorNameKey, IUntypedActorContext context)
         {
-            return _propLookup[typeof(T)](context);
+            return _propLookup[actorNameKey](context);
         }
 
 

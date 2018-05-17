@@ -10,23 +10,23 @@ namespace AkkaDITest.Actors
 
     public interface IChildActorCreator
     {
-        IActorRef GetChild<T>(IUntypedActorContext context);
+        Props GetChild(string actorNameKey, IUntypedActorContext context);
     }
 
 
     public class ChildActorCreator : IChildActorCreator
     {
-        private Dictionary<Type, Func<IUntypedActorContext, IActorRef>> _propLookup =
-            new Dictionary<Type, Func<IUntypedActorContext, IActorRef>>();
+        private Dictionary<string, Func<IUntypedActorContext, Props>> _propLookup =
+            new Dictionary<string, Func<IUntypedActorContext, Props>>();
 
         public ChildActorCreator()
         {
-            _propLookup.Add(typeof(BeginChildMessage), (context) => context.ActorOf(context.DI().Props<MyChildActor>(), ActorNames.MyChildActorName));
+            _propLookup.Add(ActorNames.MyChildActorName, (context) => context.DI().Props<MyChildActor>());
         }
 
-        public IActorRef GetChild<T>(IUntypedActorContext context)
+        public Props GetChild(string actorNameKey, IUntypedActorContext context)
         {
-            return _propLookup[typeof(T)](context);
+            return _propLookup[actorNameKey](context);
         }
 
         public string Name => "ChildActorCreator";

@@ -21,7 +21,19 @@ namespace AkkaDITest.Actors
                 var x = _someService.ReturnValue("war is a big business");
                 Console.WriteLine($"ISomeService.ReturnValue(\"war is a big business\") gave result {x}");
 
-                var childActor = _childActorCreator.GetChild<BeginChildMessage>(Context);
+				
+				//IF WE WANT TO USE BACKOFF THIS IS HOW WE WOULD DO IT
+
+                //var supervisor = BackoffSupervisor.Props(
+                //    Backoff.OnFailure(
+                //        _childActorCreator.GetChild(ActorNames.MyChildActorName,Context),
+                //        childName: ActorNames.MyChildActorName,
+                //        minBackoff: TimeSpan.FromSeconds(3),
+                //        maxBackoff: TimeSpan.FromSeconds(30),
+                //        randomFactor: 0.2));
+                //return ctx.ActorOf(supervisor);
+				
+                var childActor = Context.ActorOf(_childActorCreator.GetChild(ActorNames.MyChildActorName,Context), ActorNames.MyChildActorName);
                 childActor.Tell(new BeginChildMessage());
 
             });

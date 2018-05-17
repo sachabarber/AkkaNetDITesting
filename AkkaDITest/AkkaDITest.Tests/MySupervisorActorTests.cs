@@ -18,25 +18,18 @@ namespace AkkaDITest.Tests
     [TestFixture]
     public class MySupervisorActorTests : TestKit
     {
-
-
         [SetUp]
         public void SetUp()
         {
             ContainerOperations.Instance.ReInitialise();
         }
 
-
         [Test]
         public void Correct_Message_Received_When_Using_TestChildActor_Test()
         {
             //Setup stuff for this testcase
-
             Mock<ISomeService> mockSomeService = new Mock<ISomeService>();
             mockSomeService.Setup(x => x.ReturnValue(It.IsAny<string>())).Returns("In a test mock");
-
-
-
             ContainerOperations.Instance.AddExtraModulesCallBack = builder =>
             {
 
@@ -59,11 +52,9 @@ namespace AkkaDITest.Tests
             mySupervisorActor.Tell(new StartMessage(), TestActor);
 
 
-            AwaitCondition(() => HasMessages, TimeSpan.FromSeconds(10));
-
             // Assert
+            AwaitCondition(() => HasMessages, TimeSpan.FromSeconds(10));
             var message = ExpectMsg<ChildSucceededMessage>();
-
             Assert.AreEqual("TestChildActor", message.FromWho);
         }
     }
