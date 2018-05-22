@@ -27,20 +27,22 @@ namespace AkkaDITest.Tests
         [Test]
         public void Correct_Message_Received_When_Using_TestChildActor_Test()
         {
+            Mock<IChildActorCreator> mockChildActorCreator = new Mock<IChildActorCreator>();
+            mockChildActorCreator.Setup(x => x.GetChild(ActorNames.MyChildActorName, It.IsAny<IUntypedActorContext>()))
+                .Returns((string childName, IUntypedActorContext context) => context.DI().Props<TestChildActor>());
+
             //Setup stuff for this testcase
             Mock<ISomeService> mockSomeService = new Mock<ISomeService>();
             mockSomeService.Setup(x => x.ReturnValue(It.IsAny<string>())).Returns("In a test mock");
             ContainerOperations.Instance.AddExtraModulesCallBack = builder =>
             {
-
                 builder.Register(x=> mockSomeService.Object)
                     .As<ISomeService>()
                     .SingleInstance();
 
-
-                builder.RegisterType<TestChildActorCreator>()
-                    .As<IChildActorCreator>()
-                    .SingleInstance();
+                builder.Register(x => mockChildActorCreator.Object)
+                  .As<IChildActorCreator>()
+                  .SingleInstance();
 
                 builder.RegisterType<TestChildActor>();
 
