@@ -32,8 +32,9 @@ namespace AkkaDITest.Actors
                 //        maxBackoff: TimeSpan.FromSeconds(30),
                 //        randomFactor: 0.2));
                 //return ctx.ActorOf(supervisor);
-				
-                var childActor = Context.ActorOf(_childActorCreator.GetChild(ActorNames.MyChildActorName,Context), ActorNames.MyChildActorName);
+
+                var childActor =_childActorCreator.Create<MyChildActor>(Context);
+
                 childActor.Tell(new BeginChildMessage());
 
             });

@@ -9,7 +9,6 @@ namespace AkkaDITest.Tests.Actors
     {
         private IFooService _fooService;
 
-
         public TestChildActor(IFooService fooService)
         {
             _fooService = fooService;
