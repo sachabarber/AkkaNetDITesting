@@ -25,18 +25,18 @@ namespace AkkaDITest.Actors
 
                 //IF WE WANT TO USE BACKOFF THIS IS HOW WE WOULD DO IT
 
-                var supervisor = BackoffSupervisor.Props(
-                    Backoff.OnFailure(
-                        _childActorCreator.GetProps<MyChildActor>(Context),
-                        childName: "MyChildActorName",
-                        minBackoff: TimeSpan.FromSeconds(3),
-                        maxBackoff: TimeSpan.FromSeconds(30),
-                        randomFactor: 0.2));
+                //var supervisor = BackoffSupervisor.Props(
+                //    Backoff.OnFailure(
+                //        _childActorCreator.GetProps<MyChildActor>(Context),
+                //        childName: "MyChildActorName",
+                //        minBackoff: TimeSpan.FromSeconds(3),
+                //        maxBackoff: TimeSpan.FromSeconds(30),
+                //        randomFactor: 0.2));
 
-                var childActor = Context.ActorOf(supervisor);
+                //var childActor = Context.ActorOf(supervisor);
 
                 // OTHERWISE
-                //var childActor =_childActorCreator.Create<MyChildActor>(Context);
+                var childActor = _childActorCreator.Create<MyChildActor>(Context);
 
                 childActor.Tell(new BeginChildMessage());
 
