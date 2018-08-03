@@ -1,5 +1,6 @@
 ﻿using System;
 using Akka.Actor;
+using Akka.Pattern;
 using AkkaDITest.Messages;
 using AkkaDITest.Services;
 
@@ -21,19 +22,21 @@ namespace AkkaDITest.Actors
                 var x = _someService.ReturnValue("war is a big business");
                 Console.WriteLine($"ISomeService.ReturnValue(\"war is a big business\") gave result {x}");
 
-				
-				//IF WE WANT TO USE BACKOFF THIS IS HOW WE WOULD DO IT
 
-                //var supervisor = BackoffSupervisor.Props(
-                //    Backoff.OnFailure(
-                //        _childActorCreator.GetChild(ActorNames.MyChildActorName,Context),
-                //        childName: ActorNames.MyChildActorName,
-                //        minBackoff: TimeSpan.FromSeconds(3),
-                //        maxBackoff: TimeSpan.FromSeconds(30),
-                //        randomFactor: 0.2));
-                //return ctx.ActorOf(supervisor);
+                //IF WE WANT TO USE BACKOFF THIS IS HOW WE WOULD DO IT
 
-                var childActor =_childActorCreator.Create<MyChildActor>(Context);
+                var supervisor = BackoffSupervisor.Props(
+                    Backoff.OnFailure(
+                        _childActorCreator.GetProps<MyChildActor>(Context),
+                        childName: "MyChildActorName",
+                        minBackoff: TimeSpan.FromSeconds(3),
+                        maxBackoff: TimeSpan.FromSeconds(30),
+                        randomFactor: 0.2));
+
+                var childActor = Context.ActorOf(supervisor);
+
+                // OTHERWISE
+                //var childActor =_childActorCreator.Create<MyChildActor>(Context);
 
                 childActor.Tell(new BeginChildMessage());
 
